@@ -1,0 +1,8 @@
+torch==2.15.0
+transformers==5.22.2
+accelerate
+safetensors
+numpy
+pandas
+pyyaml
+pytest

@@ -1,0 +1,32 @@
+output: results/qwen_48k_96k.jsonl
+device: cuda
+dtype: bfloat16
+attn: sdpa
+seed: 0
+repeats: 3
+warmup_steps: 5
+measure_steps: 250
+memory_fraction: 0.9
+cooldown_s: 1
+models: ["${QWEN}"]
+grids:
+  - n_ctx: [49152]
+    batch: [1]
+    prefill_chunk: [8192]
+    kv: &plans
+      - {kind: full}
+      - {kind: full, offload: 0.5}
+      - {kind: full, offload: 1.0}
+      - {kind: full, offload: 0.5, prefetch: false}
+      - {kind: int8}
+      - {kind: int8, offload: 0.5}
+      - {kind: int8, offload: 1.0}
+      - {kind: int8, offload: 0.5, prefetch: false}
+  - n_ctx: [49152]
+    batch: [2]
+    prefill_chunk: [8192]
+    kv: *plans
+  - n_ctx: [98304]
+    batch: [1]
+    prefill_chunk: [8192]
+    kv: *plans
